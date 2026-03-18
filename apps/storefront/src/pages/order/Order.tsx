@@ -433,6 +433,8 @@ function Order({ isCompanyOrder = false }: OrderProps) {
           />
         </Box>
 
+        <Box>Hello world</Box>
+
         <B3Table
           columnItems={columnItems}
           listItems={listItems}
