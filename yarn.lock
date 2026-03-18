@@ -1316,12 +1316,12 @@
     "@babel/helper-string-parser" "^7.27.1"
     "@babel/helper-validator-identifier" "^7.28.5"
 
-"@bigcommerce/eslint-config@^2.11.0":
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/@bigcommerce/eslint-config/-/eslint-config-2.11.0.tgz#71459b8c444d6e45f6c923cc5677b35091f65216"
-  integrity sha512-r2fWFFmb4UTUEIgI50iKqrNg9Y9xvFepWhOYP/wXNofAyb/+MiH8pHb7glxZFphEtTWnb5hI7K9gCvCrXPAOcQ==
+"@bigcommerce/eslint-config@^2.13.1":
+  version "2.13.1"
+  resolved "https://registry.yarnpkg.com/@bigcommerce/eslint-config/-/eslint-config-2.13.1.tgz#071609e255ba919c7743f90e505fec3ce90bd889"
+  integrity sha512-GkHZ478PhZ5HcaVupk/jPALNp6JQt3aOTjC7o0Ku79vo0FyJ/vtXwXg2zEGOMo22Y1rFDG6suJtLXilCebWXCw==
   dependencies:
-    "@bigcommerce/eslint-plugin" "^1.4.0"
+    "@bigcommerce/eslint-plugin" "^1.4.1"
     "@rushstack/eslint-patch" "^1.10.5"
     "@stylistic/eslint-plugin" "^2.1.0"
     "@typescript-eslint/eslint-plugin" "^8.26.0"
@@ -1342,10 +1342,10 @@
     eslint-plugin-testing-library "^7.1.1"
     prettier "^3.5.3"
 
-"@bigcommerce/eslint-plugin@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@bigcommerce/eslint-plugin/-/eslint-plugin-1.4.0.tgz#4ac43a81875cd19a507580d36ba9de27e4ab81c2"
-  integrity sha512-aNmrOiQpre5z5yzbEktdugYi1goaVWt62SfcmvXhKoBAdHIxIfjNhWub+dUDg+6xTQZjRcd/AOBTV1Mi3SxriQ==
+"@bigcommerce/eslint-plugin@^1.4.0", "@bigcommerce/eslint-plugin@^1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@bigcommerce/eslint-plugin/-/eslint-plugin-1.4.1.tgz#36bada628ff2fb9c5eeaf5299bb0bc407bab732d"
+  integrity sha512-bnyTV7koYKgDyW+3oIGGYP7yD1KqLMkMKhnktOBylz2d4kY/pLmdVtpvVvMSwnwr3JdPtAqR6/yVGT7isKgFbA==
   dependencies:
     tsutils "^3.21.0"
 
