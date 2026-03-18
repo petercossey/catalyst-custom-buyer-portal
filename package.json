@@ -10,6 +10,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
+    "deploy:webdav": "node ./scripts/deploy-webdav.mjs",
     "lint": "turbo run lint --parallel --continue",
     "format": "turbo run format --parallel --continue",
     "test": "turbo run test",
@@ -17,9 +18,11 @@
     "clean:node-modules": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +"
   },
   "devDependencies": {
+    "dotenv": "^17.2.3",
     "eslint": "^8.2.0",
     "prettier": "^3.6.2",
-    "turbo": "^2.6.3"
+    "turbo": "^2.6.3",
+    "webdav": "^5.8.0"
   },
   "engines": {
     "node": ">=22.16.0"

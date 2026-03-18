@@ -38,3 +38,6 @@ slack-message.json
 
 # generated graphql POC schema
 supergraph.graphql
+
+# webdav deployment variables
+scripts/webdav.env
