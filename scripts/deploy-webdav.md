@@ -19,6 +19,7 @@ yarn deploy:webdav --skip-build
 Notes:
 
 - `WEBDAV_URL` must end with `/dav`
-- The script builds `apps/storefront`, uploads `dist/` to WebDAV, and prints the public URL
-- If `WEBDAV_CDN_BASE_URL` is omitted, the CDN URL is derived automatically when possible
+- The script builds `apps/storefront`, uploads `dist/` to WebDAV, and sets `VITE_ASSETS_ABSOLUTE_PATH` to the CDN asset URL for that release
+- If `WEBDAV_CDN_BASE_URL` is omitted, the script derives the CDN asset URL automatically when possible
+- If a CDN asset URL cannot be derived, the deploy fails and requires `WEBDAV_CDN_BASE_URL`
 - `yarn deploy:webdav` is a thin wrapper around `node ./scripts/deploy-webdav.mjs`, so either entrypoint works if you prefer invoking the script directly

@@ -57,7 +57,7 @@ Environment variables:
   WEBDAV_USERNAME
   WEBDAV_PASSWORD
   WEBDAV_AUTH_TYPE           Optional: auto, password, digest
-  WEBDAV_CDN_BASE_URL        Optional: override the derived CDN URL
+  WEBDAV_CDN_BASE_URL        Optional: override the derived CDN asset base URL
   WEBDAV_CONTENT_BASE_PATH   Optional, defaults to /content/b2b-buyer-portal-deployments
   WEBDAV_RELEASE_NAME        Optional fallback if --release-name is not provided
   STORE_APP_DIR              Optional, defaults to apps/storefront
@@ -134,6 +134,21 @@ function deriveCdnBaseUrl({ publicBaseUrl, explicitCdnBaseUrl }) {
   }
 
   return `https://cdn11.bigcommerce.com/s-${hostMatch[1]}${publicUrl.pathname}`;
+}
+
+function resolveAssetBaseUrl({ publicBaseUrl, explicitCdnBaseUrl }) {
+  const derivedCdnBaseUrl = deriveCdnBaseUrl({
+    publicBaseUrl,
+    explicitCdnBaseUrl,
+  });
+
+  if (derivedCdnBaseUrl) {
+    return derivedCdnBaseUrl;
+  }
+
+  throw new Error(
+    'Unable to determine a CDN asset base URL. Set WEBDAV_CDN_BASE_URL explicitly.',
+  );
 }
 
 function parseAuthType(value) {
@@ -239,11 +254,11 @@ function readManifestEntries(distPath) {
     .map((entry) => entry.file);
 }
 
-function runBuild({ appDir, publicBaseUrl }) {
+function runBuild({ appDir, assetBaseUrl }) {
   const buildEnv = {
     ...process.env,
     VITE_IS_LOCAL_ENVIRONMENT: 'FALSE',
-    VITE_ASSETS_ABSOLUTE_PATH: publicBaseUrl,
+    VITE_ASSETS_ABSOLUTE_PATH: assetBaseUrl,
   };
 
   const result = spawnSync('yarn', ['build'], {
@@ -319,13 +334,13 @@ async function main() {
     contentBasePath,
     releaseName,
   });
-  const cdnBaseUrl = deriveCdnBaseUrl({
+  const assetBaseUrl = resolveAssetBaseUrl({
     publicBaseUrl,
     explicitCdnBaseUrl: webdavCdnBaseUrl,
   });
 
   if (!args.skipBuild) {
-    runBuild({ appDir, publicBaseUrl });
+    runBuild({ appDir, assetBaseUrl });
   }
 
   if (!existsSync(distDir)) {
@@ -358,10 +373,8 @@ async function main() {
   const entryFiles = readManifestEntries(distDir);
 
   console.log(`release_name=${releaseName}`);
+  console.log(`asset_url=${assetBaseUrl}`);
   console.log(`public_url=${publicBaseUrl}`);
-  if (cdnBaseUrl) {
-    console.log(`cdn_url=${cdnBaseUrl}`);
-  }
   console.log(`dav_target=${davBaseUrl}${davTargetPath}`);
 
   if (entryFiles.length > 0) {
