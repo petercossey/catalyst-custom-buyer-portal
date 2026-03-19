@@ -433,7 +433,7 @@ function Order({ isCompanyOrder = false }: OrderProps) {
           />
         </Box>
 
-        <Box>Hello world</Box>
+        <Box>Hello world Thu 19 Mar 16:01</Box>
 
         <B3Table
           columnItems={columnItems}
