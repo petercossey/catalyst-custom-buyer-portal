@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
 import dotenv from 'dotenv';
 import path from 'node:path';
 import process from 'node:process';
@@ -254,22 +254,50 @@ function readManifestEntries(distPath) {
     .map((entry) => entry.file);
 }
 
-function runBuild({ appDir, assetBaseUrl }) {
-  const buildEnv = {
-    ...process.env,
-    VITE_IS_LOCAL_ENVIRONMENT: 'FALSE',
-    VITE_ASSETS_ABSOLUTE_PATH: assetBaseUrl,
-  };
+function stringifyEnvValue(value) {
+  return JSON.stringify(value);
+}
 
-  const result = spawnSync('yarn', ['build'], {
-    cwd: appDir,
-    stdio: 'inherit',
-    env: buildEnv,
-  });
+function withTemporaryBuildEnvFile({ appDir, assetBaseUrl, callback }) {
+  const envFilePath = path.join(appDir, '.env.production.local');
+  const previousContents = existsSync(envFilePath) ? readFileSync(envFilePath, 'utf8') : undefined;
 
-  if (result.status !== 0) {
-    throw new Error(`Build failed with exit code ${result.status ?? 'unknown'}`);
+  const nextContents = [
+    'VITE_IS_LOCAL_ENVIRONMENT=FALSE',
+    `VITE_ASSETS_ABSOLUTE_PATH=${stringifyEnvValue(assetBaseUrl)}`,
+    'VITE_DISABLE_BUILD_HASH=TRUE',
+    '',
+  ].join('\n');
+
+  writeFileSync(envFilePath, nextContents);
+
+  try {
+    return callback();
+  } finally {
+    if (previousContents === undefined) {
+      unlinkSync(envFilePath);
+    } else {
+      writeFileSync(envFilePath, previousContents);
+    }
   }
+}
+
+function runBuild({ appDir, assetBaseUrl }) {
+  withTemporaryBuildEnvFile({
+    appDir,
+    assetBaseUrl,
+    callback: () => {
+      const result = spawnSync('yarn', ['build'], {
+        cwd: appDir,
+        stdio: 'inherit',
+        env: process.env,
+      });
+
+      if (result.status !== 0) {
+        throw new Error(`Build failed with exit code ${result.status ?? 'unknown'}`);
+      }
+    },
+  });
 }
 
 function formatError(error) {
@@ -376,6 +404,7 @@ async function main() {
   console.log(`asset_url=${assetBaseUrl}`);
   console.log(`public_url=${publicBaseUrl}`);
   console.log(`dav_target=${davBaseUrl}${davTargetPath}`);
+  console.log('entry_contract=index.js,index-legacy.js,polyfills-legacy.js');
 
   if (entryFiles.length > 0) {
     console.log(`entry_files=${entryFiles.join(',')}`);
